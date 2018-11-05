@@ -1,4 +1,9 @@
 numpy
 pandas
+<<<<<<< HEAD
 scikit-learn
 matplotlib
+=======
+matplotlib
+scikit-learn
+>>>>>>> d386ca70bdba029047499735b7418f8a6b08070d
