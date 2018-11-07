@@ -6,22 +6,24 @@ id3   information gain
 c4.5  gain ratio
 cart  gini
 """
-
+import pandas as pd
 from sklearn.feature_extraction import DictVectorizer
 import csv
 from sklearn import tree
 from sklearn import preprocessing
 from sklearn.externals.six import StringIO
 
-# Read in the csv file and put features into list of dict and list of class label
-allElectronicsData = open(r'data/data.csv', 'rb')
-reader = csv.reader(allElectronicsData)
-for i in reader:
-    print(i)
-# headers = reader.next()
+# 读取数据（pandas 读取）
+data = pd.read_csv("data/data.csv", encoding="utf-8")
 
-# print(headers)
-#
+# csv 读取
+allElectronicsData = open(r'data/data.csv', 'rt')
+reader = csv.reader(allElectronicsData)
+# for i in reader:
+#     print(i)
+
+X = data
+
 # featureList = []
 # labelList = []
 #
