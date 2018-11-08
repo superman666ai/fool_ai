@@ -35,7 +35,6 @@ gc.fit(x_train, y_train)
 # 预测准确率
 print(gc.score(x_test, y_test))
 
-print(gc.)
 
 # 交叉验证中最好的结果
 print(gc.best_score_)
