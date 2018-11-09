@@ -34,14 +34,30 @@ even_data = [(2, 4, 6, 8, 10)]
 stra_data = [(1, 2, 3, 4, 5), (2, 3, 4, 5, 6), (3, 4, 5, 6, 7), (4, 5, 6, 7, 8), (5, 6, 7, 8, 9), (6, 7, 8, 9, 10),
              (7, 8, 9, 10, 11), (8, 9, 10, 11, 12)]
 
-dell_data = odd_data + even_data + stra_data
+# 四连
+four_data = []
+for i in all_data:
+    # 判断是否相连
+    if i[0] + 1 == i[1] and i[1] + 1 == i[2] and i[2] + 1 == i[3]:
+        four_data.append(i)
+    elif i[1] + 1 == i[2] and i[2] + 1 == i[3] and i[3] + 1 == i[4]:
+        four_data.append(i)
+
+# 三连
+three_data = []
+for i in all_data:
+    # 判断是否相连
+    if i[0] + 1 == i[1] and i[1] + 1 == i[2]:
+        three_data.append(i)
+    elif i[1] + 1 == i[2] and i[2] + 1 == i[3]:
+        three_data.append(i)
+    elif i[2] + 1 == i[3] and i[3] + 1 == i[4]:
+        three_data.append(i)
 
 # 剩余
+dell_data = odd_data + even_data + stra_data + four_data + three_data
+
 remain_data = []
 for i in all_data:
     if i not in dell_data:
         remain_data.append(i)
-
-print(len(remain_data))
-print(len(all_data))
-print(len(dell_data))
