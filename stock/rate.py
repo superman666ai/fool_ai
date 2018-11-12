@@ -29,6 +29,7 @@ for code in code_list:
         X = ts.get_hist_data(code, start=date_start, end=date_end)
         X = X.sort_index(0)  # 将数据按照日期排序下。
         Y = X["close"] # 构造Y
+        print(X)
         # 删除close
         del X["close"]
         predict_X = X.iloc[1:]
