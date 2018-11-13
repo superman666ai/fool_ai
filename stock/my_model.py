@@ -14,13 +14,14 @@ token = "095bcdf3baef2f08104831abfe943e71c307d0f3f2deaa134a74df4b"
 pro = ts.pro_api(token=token)
 data = pro.stock_basic(exchange='', list_status='L', fields='ts_code,symbol,name,area,industry,list_date')
 code_list = list(data["symbol"])
-code_list = ["603013"]
+code_list = ["600086"]
 rise = []
 down = []
 num = 0
 for code in code_list:
     try:
         date_end_str = datetime.datetime.now().strftime("%Y-%m-%d")
+        date_end_str = "2018-11-09"
         date_end = datetime.datetime.strptime(date_end_str, "%Y-%m-%d")
         date_start = (date_end + datetime.timedelta(days=-20)).strftime("%Y-%m-%d")
         date_end = date_end.strftime("%Y-%m-%d")
@@ -58,7 +59,7 @@ for code in code_list:
             rate = round(((predict[1] - predict[0]) / predict[0]) * 100, 5)
             if rate > 5:
                 rise.append(code)
-                print("{}----涨----{}%".format(code, rate))
+            print("{}----涨----{}%".format(code, rate))
         else:
             rate = round(((predict[0] - predict[1]) / predict[0]) * 100, 5)
             print("{}----跌----{}%".format(code, rate))
