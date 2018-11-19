@@ -14,7 +14,7 @@ token = "095bcdf3baef2f08104831abfe943e71c307d0f3f2deaa134a74df4b"
 pro = ts.pro_api(token=token)
 data = pro.stock_basic(exchange='', list_status='L', fields='ts_code,symbol,name,area,industry,list_date')
 code_list = list(data["symbol"])
-code_list = ["002147"]
+# code_list = ["002147"]
 rise = []
 down = []
 num = 0
@@ -68,6 +68,7 @@ for code in code_list:
         num += 1
         print("---", num)
 
+
         # 画图
         # print(Y)
         # print(predict)
@@ -79,9 +80,15 @@ for code in code_list:
         # plt.show()
 
     except Exception as e:
+
         print(e)
         # continue
+time_sign = datetime.datetime.now()
+with open('rise.txt', 'a+') as f:
+    f.write(str(time_sign) + str(rise)+ '\n')
 
+with open('down.txt', 'a+') as f:
+    f.write(str(time_sign) +str(rise) + '\n')
 # print(rise)
 # print("----------")
 # print(down)

@@ -8,9 +8,10 @@ import tushare as ts
 
 token = "095bcdf3baef2f08104831abfe943e71c307d0f3f2deaa134a74df4b"
 pro = ts.pro_api(token=token)
-data = pro.stock_basic(exchange='SSZ', list_status='L', fields='ts_code,symbol,name,area,industry,list_date')
+data = pro.stock_basic(exchange='', list_status='L', fields='ts_code,symbol,name,area,industry,list_date')
 code_list = list(data["ts_code"])
-# code_list = ["002147"]
+# print(code_list)
+# code_list = ["002147.SZ"]
 rise = []
 down = []
 num = 0
@@ -28,8 +29,9 @@ for code in code_list:
         mean = data_pe["pe"].mean()
         mean2 = data_pe["pe_ttm"].mean()
         print(mean, mean2, code)
-        if 13 < mean < 20:
+        if 13 < int(mean) < 20:
             print("{}----预计涨----{}%".format(code))
+            rise.append(code)
 
 
         # if predict[0] < predict[1]:
