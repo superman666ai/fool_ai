@@ -88,10 +88,10 @@ for code in code_list:
 time_sign = datetime.datetime.now()
 
 with open('lin/lin_rise', 'a+') as f:
-    f.write(str(time_sign) + str(rise) + '\n')
+    f.write(str(time_sign) + '\n' + str(rise) + '\n')
 
 with open('lin/lin_down', 'a+') as t:
-    t.write(str(time_sign) + str(down) + '\n')
+    t.write(str(time_sign) + '\n' + str(down) + '\n')
 
 with open('lin/lin_pre', 'a+') as t:
-    t.write(str(time_sign) + str(pre) + '\n')
+    t.write(str(time_sign) + '\n' + str(pre) + '\n')
