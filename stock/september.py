@@ -45,7 +45,7 @@ for code in code_list:
             print("{}----相对上涨----{}".format(code, rate))
         else:
             rate = round(Y - X, 2)
-            rise.append(code + str(rate))
+            down.append(code + str(rate))
             if rate > 3:
                 pre.append(code + "down" + str(rate))
             print("{}----相对下跌----{}".format(code, rate))
