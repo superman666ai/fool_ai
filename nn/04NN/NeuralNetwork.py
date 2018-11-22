@@ -18,6 +18,7 @@ def logistic_derivative(x):
 
 
 class NeuralNetwork:
+
     def __init__(self, layers, activation='tanh'):
         """
         :param layers: A list containing the number of units in each layer.
