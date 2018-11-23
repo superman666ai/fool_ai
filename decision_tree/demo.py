@@ -64,7 +64,7 @@ clf = clf.fit(X, Y)
 
 oneRowX = X[0:1, :]
 
-print oneRowX
+print (oneRowX)
 newRowX = oneRowX
 newRowX[0][0] = 1
 newRowX[0][2] = 1
