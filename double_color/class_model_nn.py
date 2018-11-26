@@ -23,11 +23,13 @@ X = minmax.fit_transform(X)
 x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.2)
 # print(x_test)
 # 建模
-nn = MLPClassifier(hidden_layer_sizes=(100))
+nn = MLPClassifier()
 
 nn.fit(x_train, y_train)
 
 y_predict = nn.predict(x_test)
+
+
 # dict = nn.predict(x_test)
 # print(nn.out_activation_)
 
