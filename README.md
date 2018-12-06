@@ -7,7 +7,7 @@
 ### [特征工程](https://github.com/superman666ai/fool_ai/tree/master/catalog/feature.md)
 1. 特征提取
 2. 特征选择
-### [模型评估方法](https://github.com/superman666ai/fool_ai/tree/master/catalog/preprocessing.md)
+### [模型评估方法](https://github.com/superman666ai/fool_ai/tree/master/catalog/evaluate.md)
 1. 留出法
 2. 交叉验证法
 3. 自助法
