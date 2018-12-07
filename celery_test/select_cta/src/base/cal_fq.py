@@ -1,0 +1,260 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# @Time    : 2018/4/19 16:15
+# @Author  : XieTianshun
+# @Site    : 
+# @File    : cal_fq.py
+# @Software: PyCharm
+
+""" 计算 复权 数据 """
+
+# sys lib
+import datetime
+
+# tp lib
+import pandas as pd
+
+
+# proj lib
+
+
+def load_ft_exfactor_data(tb, code):
+    """
+    根据 code 加载 复权因子 信息
+    :param conn:
+    :param code:
+    :return:
+    """
+
+    cur = tb.find({'qk': code})
+
+    df = pd.DataFrame(list(cur))
+    if 0 == df.shape[0]:
+        return df
+
+    df.sort_values('date', inplace=True)
+
+    return df
+
+
+def calculate_ft_qhfq(df_daily, df_exf, kts, autype='qfq'):
+    """
+    根据 复权因子的 日期跨度 来 切分数据
+    :param df_daily:
+    :param df_exf:
+    :return:
+    """
+
+    df = df_daily
+
+    ex_key = {
+        'qfq': 'forward_adj_factor',
+        'hfq': 'backward_adj_factor',
+    }
+
+    efd = df_exf.sort_index(
+        ascending=True if autype == 'qfq' else False
+    )
+
+    for i in xrange(efd.shape[0]):
+        item = efd.iloc[i].to_dict()
+
+        # print item.get('date')
+
+        ex_date = item.get('date')
+
+        # 获取 需要 复权的 数据
+        df_tag = df.index < ex_date if autype == 'qfq' else df.index >= ex_date
+
+        df_tmp = df[df_tag][kts]
+
+        # 索引 转变为 list
+        # print df_tmp.index.tolist()
+
+        # print df_tmp.iloc[0].to_dict()
+
+        fa = item.get('{}A'.format(ex_key.get(autype)))
+        fb = item.get('{}B'.format(ex_key.get(autype)))
+
+        df_tmp = df_tmp * fa + fb
+
+        df.loc[df_tmp.index.tolist(), kts] = df_tmp
+
+    return df
+
+
+def cal_ft_fq(fqtb, key, qk, df_daily, autype='qfq'):
+    """
+    计算 富途 的复权
+    :param fqtb:
+    :param qk:
+    :param df:
+    :return:
+    """
+
+    df_daily.index = df_daily[key]
+
+    # print df_daily.index
+
+    # 载入 复权因子
+    df_exf = load_ft_exfactor_data(fqtb, qk)
+    if 0 == df_exf.shape[0]:
+        return df_daily
+
+    # 批量计算 前后复权
+    df_rst = calculate_ft_qhfq(df_daily, df_exf, ['open', 'high', 'low', 'close', 'volume'], autype)
+
+    return df_rst
+
+
+def load_a_exfactor_data(tb, code):
+    """
+    根据 A股 code 加载 复权因子 信息
+    :param conn:
+    :param code:
+    :return:
+    """
+
+    cur = tb.find({'qk': code}, {'_id': 0})
+
+    df = pd.DataFrame(list(cur))
+    if 0 == df.shape[0]:
+        return df
+
+    df.sort_values('date', inplace=True)
+
+    # 生成 前复权 因子
+    df['front_factor'] = df['finfater'] / df['finfater'].iloc[-1]
+
+    return df
+
+
+def gen_a_date_gap(df):
+    """
+    根据 复权因子 生日 日期区间
+    :param df:
+    :return:
+    """
+
+    d_rst = []
+
+    today = int(datetime.datetime.now().strftime('%Y%m%d')) + 5
+    oldday = 18000101
+
+    for i in xrange(df.shape[0]):
+
+        item = df.iloc[i].to_dict()
+
+        if 0 == i:
+            d_rst.append(
+                {
+                    'sd': oldday,
+                    'ed': item.get('date'),
+                    'factor': item.get('finfater'),
+                    'ffactor': item.get('front_factor'),
+                },
+            )
+        elif df.shape[0] - 1 == i:
+
+            preitem = df.iloc[i - 1].to_dict()
+            d_rst.append(
+
+                {
+                    'sd': preitem.get('date'),
+                    'ed': item.get('date'),
+                    'factor': preitem.get('finfater'),
+                    'ffactor': preitem.get('front_factor'),
+                },
+            )
+
+            d_rst.append(
+
+                {
+                    'sd': item.get('date'),
+                    'ed': today,
+                    'factor': item.get('finfater'),
+                    'ffactor': item.get('front_factor'),
+                },
+            )
+
+        else:
+
+            preitem = df.iloc[i - 1].to_dict()
+            d_rst.append(
+
+                {
+                    'sd': preitem.get('date'),
+                    'ed': item.get('date'),
+                    'factor': preitem.get('finfater'),
+                    'ffactor': preitem.get('front_factor'),
+                },
+            )
+
+    df_rst = pd.DataFrame(d_rst)
+
+    df_rst.sort_values('sd', inplace=True)
+
+    return df_rst
+
+
+def calculate_a_qhfq(df_daily, df_exf, kts, autype='qfq'):
+    """
+    计算 A股 的前后复权 因子
+    :return:
+    """
+
+    df = df_daily
+
+    fk = 'ffactor' if autype == 'qfq' else 'factor'
+
+    for i in xrange(df_exf.shape[0]):
+
+        item = df_exf.iloc[i].to_dict()
+
+        sd = item.get('sd')
+        ed = item.get('ed')
+
+        cl = (df_daily['date'] >= sd) & (df_daily['date'] <= ed)
+
+        df_tmp = df_daily.loc[cl][kts]
+
+        # 取出 无效 的数据
+        if 0 == df_tmp.shape[0]:
+            continue
+
+        df_tmp[['open', 'high', 'low', 'close']] *= item.get(fk)
+        df_tmp[['volume']] /= item.get(fk)
+
+        df.loc[df_tmp.index.tolist(), kts] = df_tmp.round(2)
+
+    return df
+
+
+def cal_jl_fq(fqtb, key, qk, df_daily, autype='qfq'):
+    """
+    计算 巨灵 的复权
+    :param fqtb:
+    :param qk:
+    :param df:
+    :return:
+    """
+
+    df_daily.index = df_daily[key]
+
+    # 载入 复权因子
+    df_exf = load_a_exfactor_data(fqtb, qk)
+    if 0 == df_exf.shape[0]:
+        return df_daily
+
+    # 生成复权因子 日期区间
+    df_exf_gap = gen_a_date_gap(df_exf)
+
+    df_rst = calculate_a_qhfq(
+        df_daily,
+        df_exf_gap,
+        ['open', 'high', 'low', 'close', 'volume'],
+        autype
+    )
+
+    return df_rst

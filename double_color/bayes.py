@@ -21,7 +21,7 @@ Y = data.iloc[1:, 7:]
 # minmax = MinMaxScaler()
 # X = minmax.fit_transform(X)
 # #测试集 训练集划分
-x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.2)
+x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.25)
 # print(x_test)
 # 建模
 nn = MultinomialNB()
@@ -30,7 +30,10 @@ nn.fit(x_train, y_train)
 
 y_predict = nn.predict(x_test)
 
-
+pre = nn.predict([[1, 10, 25, 27, 30, 32]])
+# pre = nn.predict([[3, 5, 11, 15, 20, 23]])
+# pre = nn.predict([[1, 3, 6, 10, 11, 29]])
+print(pre, "pre")
 # dict = nn.predict(x_test)
 # print(nn.out_activation_)
 
