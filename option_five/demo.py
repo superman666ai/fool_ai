@@ -7,13 +7,18 @@ import pandas as pd
 from itertools import combinations
 
 data = pd.read_csv("data/20181107.csv")
-new_data = []
+# 所有数据
 all = list(data.drop(["id"], axis=1).values)
+
+# 构造新的dataframe
+new_data = []
 for i in all:
     new_data.append(sorted(list(i)))
 
+
 data_csv = pd.DataFrame(data=new_data, index=data["id"], columns=["a", "b", "c", "d", "e"])
 
+# 拼接所有数字 组成ids
 data_csv["ids"] = data_csv["a"].map(str) + data_csv["b"].map(str) + data_csv["c"].map(str) + data_csv["d"].map(str) + \
                   data_csv["e"].map(str)
 
@@ -21,8 +26,9 @@ group_data = data_csv.groupby(["ids"], as_index=False)['ids'].agg({'cnt': 'count
 
 data_end = group_data.sort_values(by=["cnt"], ascending=False)
 
+
 # 所有结果
-all_data = list(combinations([x for x in range(1, 13)], 5))
+all_data = list(combinations([x for x in range(1, 12)], 5))
 
 # 全奇数
 odd_data = list(combinations([x for x in range(1, 13, 2)], 5))
@@ -61,3 +67,7 @@ remain_data = []
 for i in all_data:
     if i not in dell_data:
         remain_data.append(i)
+print(len(remain_data))
+
+
+# print(len(all_data))
